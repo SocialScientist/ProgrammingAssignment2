@@ -4,19 +4,19 @@
 
 ## "makeCacheMatrix" is a function that takes an invertible matrix as the 
 ## argument and returns a list of functions that define:
-## (1) how to set and get the matrix whose inverse is to calculated, and 
-## (2) how to set and get the inverse of the matrix
+## (1) how to set and get (call) the matrix whose inverse is to calculated, and 
+## (2) how to set and get (call) the inverse of the matrix
 
-makeCacheMatrix <- function(x = matrix()) {
-  m <- NULL
-  set <- function(y) {
-    x <<- y
-    m <<- NULL
+makeCacheMatrix <- function(x = matrix()) {  ## the "makeCacheMatrix" function takes the matrix to be inverted as an the argument
+  m <- NULL                                  ##  the result "m"  which is the inverse of the matrix is initialized ("m" is also the return of "cacheSolve")
+  set <- function(y) {                       ## the argument of the "set" function ...
+    x <<- y                                  ## ... is assigned to the argument of the "makeCacheMatrix" in cache
+    m <<- NULL                               ## the result "m" is saved in cache as empty
   }
-  get <- function() x
-  setinverse <- function(solve) m <<- solve
-  getinverse <- function() m
-  list(set = set, get = get,
+  get <- function() x                        ## the "get" function is defined - it calls the matrix to be inverted for the first time for "cacheSolve" 
+  setinverse <- function(solve) m <<- solve  ## the "setinverse" function is defined - it saves the inverse of the matrix from "cacheSolve" for future use
+  getinverse <- function() m                 ## the "getinverse" function is defined - it calls the inverse of the matrix from cache if needed again by "cacheSolve"
+  list(set = set, get = get,                 ## the four functions are updated
        setinverse = setinverse,
        getinverse = getinverse)
 }
@@ -29,14 +29,18 @@ makeCacheMatrix <- function(x = matrix()) {
 ## in cache, it computes and returns the result and also saves it in cache
 ## for future use
 
-cacheSolve <- function(x, ...) {
-  m <- x$getinverse()
-  if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
+cacheSolve <- function(x, ...) {           ## the "cacheSolve" function takes the four functions defined in "makeCacheMatrix" as an argument
+  m <- x$getinverse()                      ## the result "m" is called using the "getinverse" function generated in "makeCacheMatrix"
+  if(!is.null(m)) {                        ## if the result exists in cache ...
+    message("getting cached data")         ## ... then this message is printed
+    return(m)                              ## ... and the result "m" is returned to the user
   }
-  data <- x$get()
-  m <- solve(data, ...)
-  x$setinverse(m)
-  m
+  data <- x$get()                          ## otherwise the matrix is called using the "get" function generated in "makeCacheMatrix" and assigned to "data"
+  m <- solve(data, ...)                    ## the inverse of the matrix is computed and assigned to "m"
+  x$setinverse(m)                          ## the result is saved in cache by the "setinverse" function generated in "makeCacheMatrix" and ...
+  m                                        ## ... also returned for the user 
 }
+
+## Sources:
+## https://class.coursera.org/rprog-009/human_grading/view/courses/972583/assessments/3/submissions
+## https://class.coursera.org/rprog-009/forum/thread?thread_id=457

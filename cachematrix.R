@@ -41,6 +41,6 @@ cacheSolve <- function(x, ...) {           ## the "cacheSolve" function takes th
   m                                        ## ... also returned for the user 
 }
 
-## Sources:
+## References:
 ## https://class.coursera.org/rprog-009/human_grading/view/courses/972583/assessments/3/submissions
 ## https://class.coursera.org/rprog-009/forum/thread?thread_id=457
